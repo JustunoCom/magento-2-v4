@@ -1,0 +1,28 @@
+<?xml version='1.0'?>
+<config
+	xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	xsi:noNamespaceSchemaLocation='urn:magento:framework:ObjectManager/etc/config.xsd'
+>
+<!-- 2020-01-24 How to get the current customer ID in JavaScript: https://magento.stackexchange.com/a/201284 -->
+	<type name='Magento\Customer\CustomerData\Customer'>
+		<plugin disabled='false' name='Justuno\Core\Customer\Js\CustomerId'/>
+	</type>
+<!-- 2020-03-14
+"Respond to the `/justuno/service-worker.js` request with the provided JavaScript":
+https://github.com/justuno-com/m2/issues/10
+2020-03-15
+"Replace the `/justuno/service-worker.js` URL with  `/apps/justuno/service-worker.js`":
+https://github.com/justuno-com/m2/issues/11 -->
+	<type name='Magento\Framework\App\Router\ActionList'>
+		<plugin
+			name='Justuno\M2\Plugin\Framework\App\Router\ActionList' type='Justuno\M2\Plugin\Framework\App\Router\ActionList'
+		/>
+	</type>
+<!-- 2021-02-23 "Implement a database diagnostic tool": https://github.com/justuno-com/core/issues/347 -->
+	<type name='Magento\Framework\Session\SessionStartChecker'>
+		<plugin
+			name='Justuno\M2\Plugin\Framework\Session\SessionStartChecker'
+			type='Justuno\M2\Plugin\Framework\Session\SessionStartChecker'
+		/>
+	</type>
+</config>

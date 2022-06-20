@@ -1,0 +1,69 @@
+<?xml version='1.0' ?>
+<config
+	xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	xsi:noNamespaceSchemaLocation='urn:magento:module:Magento_Config:etc/system_file.xsd'
+>
+	<system>
+		<tab id='justuno' sortOrder='999'><label>Justuno</label></tab>
+		<section
+			id='justuno_settings'
+			showInDefault='1'
+			showInStore='1'
+			showInWebsite='1'
+			sortOrder='1'
+		>
+			<label>Account Configuration</label>
+			<tab>justuno</tab>
+			<resource>Justuno_M2::settings</resource>
+			<group
+				id='options_interface'
+				showInDefault='1'
+				showInStore='1'
+				showInWebsite='1'
+				sortOrder='10'
+			>
+				<label>Options</label>
+				<field
+					id='accid'
+					showInDefault='1'
+					showInStore='1'
+					showInWebsite='1'
+					sortOrder='1'
+					type='text'
+				>
+					<label>Justuno Account Number</label>
+					<comment><![CDATA[<a href='https://github.com/justuno-com/m2/blob/master/doc/account-number.md#h' target='_blank'>where to find it?</a>]]></comment>
+				</field>
+				<field
+					id='brand_attribute'
+					showInDefault='1'
+					showInStore='1'
+					showInWebsite='1'
+					sortOrder='2'
+					type='select'
+				>
+					<label>Brand Attribute</label>
+					<source_model>Justuno\M2\Config\Source\Brand</source_model>
+				</field>
+				<field
+					id='token_key'
+					showInDefault='1'
+					showInStore='1'
+					showInWebsite='1'
+					sortOrder='3'
+					type='text'
+				>
+					<label>API Token Key</label>
+				</field>
+				<field
+					id='generateToken'
+					showInDefault='1'
+					showInStore='1'
+					showInWebsite='1'
+					sortOrder='4'
+					type='Justuno\M2\Block\GenerateToken'
+				/>
+			</group>
+		</section>
+	</system>
+</config>

@@ -1,0 +1,17 @@
+{
+	"name": "justuno.com/m2"
+	,"version": "1.7.3"
+	,"description": "Justuno module for Magento 2"
+	,"type": "magento2-module"
+	,"homepage": "https://github.com/justunoCom/m2"
+	,"license": "MIT"
+	,"authors": [{
+		"name": "Dmitry Fedyuk"
+		,"email": "admin@mage2.pro"
+		,"homepage": "https://mage2.pro/users/dmitry_fedyuk"
+		,"role": "Developer"
+	}]
+	,"require": {"justuno.com/core": ">=1.2.0"}
+	,"autoload": {"files": ["registration.php"], "psr-4": {"Justuno\\M2\\": ""}}
+	,"keywords": ["Magento 2"]
+}
