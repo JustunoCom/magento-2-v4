@@ -6,7 +6,7 @@ bin/magento maintenance:enable
 rm -rf app/code/Justuno/Jumagext
 rm -rf composer.lock
 composer clear-cache
-composer require justuno.com/m2:*
+composer require justuno.com/magento-2-v4:*
 bin/magento setup:upgrade
 bin/magento cache:enable
 rm -rf var/di var/generation generated/*
@@ -20,10 +20,10 @@ bin/magento maintenance:disable
 ## How to upgrade
 ```
 bin/magento maintenance:enable
-composer remove justuno.com/m2
+composer remove justuno.com/magento-2-v4
 rm -rf composer.lock
 composer clear-cache
-composer require justuno.com/m2:*
+composer require justuno.com/magento-2-v4:*
 bin/magento setup:upgrade
 bin/magento cache:enable
 rm -rf var/di var/generation generated/*
