@@ -1,9 +1,9 @@
 {
-	"name": "justuno.com/m2"
-	,"version": "1.7.3"
+	"name": "justuno.com/magento-2-v4"
+	,"version": "1"
 	,"description": "Justuno module for Magento 2"
 	,"type": "magento2-module"
-	,"homepage": "https://github.com/justunoCom/m2"
+	,"homepage": "https://github.com/justunoCom/magento-2-v4"
 	,"license": "MIT"
 	,"authors": [{
 		"name": "Dmitry Fedyuk"
@@ -12,6 +12,6 @@
 		,"role": "Developer"
 	}]
 	,"require": {"justuno.com/core": ">=1.2.0"}
-	,"autoload": {"files": ["registration.php"], "psr-4": {"Justuno\\M2\\": ""}}
+	,"autoload": {"files": ["registration.php"], "psr-4": {"Justuno\\magento-2-v4\\": ""}}
 	,"keywords": ["Magento 2"]
 }
