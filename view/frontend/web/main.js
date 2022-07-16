@@ -2,6 +2,7 @@
 define([], function() {return (
 	/**
 	 * @param {Object} cfg
+     * @param {?String} cfg.domain
 	 * @param {String} cfg.merchantId
 	 * ju_is_catalog_product_view():
 	 * @param {?String} cfg.action
@@ -67,6 +68,7 @@ define([], function() {return (
 		// 1) "Replace `cdn.jst.ai` with `justone.ai`": https://github.com/JustunoCom/magento-2-v4/issues/3
 		// 2) Currently, it intentionally breaks the module because the `//justone.ai/vck.js` URL is not resolved:
 		// https://github.com/JustunoCom/magento-2-v4/issues/3#issuecomment-1186100103
-		require(['//justone.ai/vck.js'], function() {});
+        // 3) "Implement the «Custom Subdomain» field": https://github.com/JustunoCom/magento-2-v4/issues/2
+		require([`//${cfg.domain || 'justone.ai'}/vck.js`], function() {});
 	});
 });

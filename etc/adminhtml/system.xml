@@ -63,6 +63,17 @@
 					sortOrder='4'
 					type='Justuno\M2\Block\GenerateToken'
 				/>
+				<field
+					id='domain'
+					showInDefault='1'
+					showInStore='1'
+					showInWebsite='1'
+					sortOrder='5'
+					type='text'
+				>
+					<label>Custom Subdomain</label>
+					<comment><![CDATA[It is optional and requires <a href='https://www.justuno.com/pricing' target='_blank'>Flex or higher Justuno Plan</a>]]></comment>
+				</field>
 			</group>
 		</section>
 	</system>

@@ -32,7 +32,11 @@ class Js extends _P {
 			$r = '';
 		}
 		else {
-			$p = ['merchantId' => $id]; /** @var array(string => mixed) $p */
+			$p = ju_clean([
+                # 2022-07-16 "Implement the «Custom Subdomain» field": https://github.com/JustunoCom/magento-2-v4/issues/2
+                'domain' => S::s()->domain()
+                ,'merchantId' => $id
+            ]); /** @var array(string => mixed) $p */
 			if (ju_is_catalog_product_view()) {
 				$p += ['action' => ju_action_name(), 'productId' => ju_product_current_id()];
 			}
