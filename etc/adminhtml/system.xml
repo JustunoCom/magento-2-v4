@@ -72,7 +72,7 @@
 					type='text'
 				>
 					<label>Custom Subdomain</label>
-					<comment><![CDATA[It is optional and requires <a href='https://www.justuno.com/pricing' target='_blank'>Flex or higher Justuno Plan</a>]]></comment>
+					<comment><![CDATA[It is optional and requires <a href='https://www.justuno.com/pricing' target='_blank'>Flex or higher Justuno Plan</a>.<br/>I.e., «<i>ju.yourdomain.com</i>».]]></comment>
 				</field>
 			</group>
 		</section>
