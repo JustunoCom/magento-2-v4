@@ -6,12 +6,12 @@
 	,"homepage": "https://github.com/justunoCom/magento-2-v4"
 	,"license": "MIT"
 	,"authors": [{
-		"name": "Dmitry Fedyuk"
+		"name": "Dmitrii Fediuk"
 		,"email": "admin@mage2.pro"
-		,"homepage": "https://mage2.pro/users/dmitry_fedyuk"
+		,"homepage": "https://www.upwork.com/fl/mage2pro"
 		,"role": "Developer"
 	}]
 	,"require": {"justuno.com/core": ">=1.2.0"}
-	,"autoload": {"files": ["registration.php"], "psr-4": {"Justuno\\magento-2-v4\\": ""}}
+	,"autoload": {"files": ["registration.php"], "psr-4": {"Justuno\\M2\\": ""}}
 	,"keywords": ["Magento 2"]
 }
