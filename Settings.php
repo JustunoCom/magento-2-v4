@@ -15,7 +15,7 @@ final class Settings extends \Justuno\Core\Config\Settings {
 	 * 2021-03-06
 	 * @used-by \Justuno\M2\Controller\Response\Catalog::execute()
 	 */
-	function brand_attribute():string {return $this->v();}
+	function brand_attribute():string {return (string)$this->v();}
 
 	/**
 	 * 2022-07-13 "Implement the «Custom Subdomain» field": https://github.com/JustunoCom/magento-2-v4/issues/2
