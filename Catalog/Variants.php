@@ -8,10 +8,9 @@ final class Variants {
 	/**
 	 * 2019-10-30
 	 * @used-by \Justuno\M2\Controller\Response\Catalog::execute()
-	 * @param P $p
 	 * @return array(array(string => mixed))
 	 */
-	static function p(P $p) { /** @var array(array(string => mixed)) $r */
+	static function p(P $p):array { /** @var array(array(string => mixed)) $r */
 		if (!ju_configurable($p)) {
 			# 2019-30-31
 			# "Products: some Variants are objects instead of arrays of objects": https://github.com/justuno-com/m1/issues/32
@@ -20,7 +19,7 @@ final class Variants {
 		else {
 			$ct = $p->getTypeInstance(); /** @var Configurable $ct */
 			/** @var P[] $ch */
-			if (!($ch = ju_pc_preserve_absent_f(function() use($ct, $p) {return $ct->getUsedProducts($p);}))) {
+			if (!($ch = ju_pc_preserve_absent_f(function() use($ct, $p):array {return $ct->getUsedProducts($p);}))) {
 				# 2020-11-23
 				# 1) "A configurable product without any associated child products should not produce variants":
 				# https://github.com/justuno-com/m2/issues/21
@@ -30,7 +29,7 @@ final class Variants {
 			}
 			else {
 				$opts = array_column($ct->getConfigurableAttributesAsArray($p), 'attribute_code', 'id');
-				$r = array_values(array_map(function(P $c) use($opts, $p) {return self::variant($c, $p, $opts);}, $ch));
+				$r = array_values(array_map(function(P $c) use($opts, $p):array {return self::variant($c, $p, $opts);}, $ch));
 			}
 		}
 		return $r;
@@ -38,13 +37,11 @@ final class Variants {
 
 	/**
 	 * 2019-10-30
-	 * @used-by p()
-	 * @param P $p
-	 * @param P|IP|null $parent [optional]
+	 * @used-by self::p()
 	 * @param array(int => string) $opts [optional]
 	 * @return array(string => mixed)
 	 */
-	private static function variant(P $p, P $parent = null, $opts = []) {return [
+	private static function variant(P $p, P $parent = null, array $opts = []):array {return [
 		'ID' => $p->getId()
 		# 2019-10-30
 		# «if a product has a Status of "Disabled" we'd still want it in the feed,

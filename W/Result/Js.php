@@ -18,10 +18,9 @@ class Js extends \Justuno\Core\Framework\W\Result {
 	 * because the method is absent in @see \Magento\Framework\Controller\ResultInterface
 	 * @override
 	 * @see \Justuno\Core\Framework\W\Result::__toString()
-	 * @used-by render()
-	 * @return string
+	 * @used-by self::render()
 	 */
-	final function __toString() {return $this->_r;}
+	final function __toString():string {return $this->_r;}
 
 	/**
 	 * 2020-03-14
@@ -30,31 +29,24 @@ class Js extends \Justuno\Core\Framework\W\Result {
 	 * @used-by \Justuno\Core\Framework\W\Result::renderResult()
 	 * @param IR|R $r
 	 */
-	final protected function render(IR $r) {
+	final protected function render(IR $r):void {
 		$r->setBody($this->__toString());
 		ju_response_content_type('application/javascript', $r);
 	}
 
 	/**
 	 * 2020-03-14
-	 * @used-by __toString()
-	 * @used-by i()
+	 * @used-by self::__toString()
+	 * @used-by self::i()
 	 * @var string
 	 */
 	private $_r;
 
 	/**
 	 * 2020-03-14
-	 * $m could be:
-	 * 1) A module name: «A_B`»
-	 * 2) A class name: «A\B\C».
-	 * 3) An object.
 	 * @used-by \Justuno\M2\Controller\Js::execute()
-	 * @param string|object $m
-	 * @param string $name
-	 * @return self
 	 */
-	final static function i($name) {
+	final static function i(string $name):self {
 		$i = new self; /** @var self $i */
 		$i->_r = ju_module_file(__CLASS__, "js/$name", 'js', true, function($f) {return file_get_contents($f);});
 		return $i;

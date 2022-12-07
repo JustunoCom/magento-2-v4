@@ -2,7 +2,6 @@
 namespace Justuno\M2;
 use DateTimeZone as TZ;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as PC;
-use Magento\Directory\Helper\Data as DirectoryH;
 use Magento\Framework\Data\Collection\AbstractDb as C;
 use Magento\Sales\Model\ResourceModel\Order\Collection as OC;
 # 2019-10-31
@@ -14,7 +13,7 @@ final class Filter {
 	 * @param C|OC|PC $r
 	 * @return OC|PC;
 	 */
-	static function p(C $r) {
+	static function p(C $r):C {
 		self::byDate($r);
 		self::byProduct($r);
 		/** @var string $dir */ /** @var string $suffix */
@@ -29,10 +28,10 @@ final class Filter {
 
 	/**
 	 * 2019-10-31
-	 * @used-by p()
+	 * @used-by self::p()
 	 * @param C|OC|PC $c
 	 */
-	private static function byDate(C $c) {
+	private static function byDate(C $c):void {
 		if ($since = ju_request('updatedSince')) { /** @var string $since */
 			/**
 			 * 2021-03-24 "`updatedSince` should be interpreted in the UTC timezone": https://github.com/justuno-com/m2/issues/37
@@ -41,16 +40,11 @@ final class Filter {
 			 * https://github.com/justuno-com/m2/issues/38
 			 */
 			$tz = new TZ('UTC'); /** @var TZ $tz */
-			/**
-			 * 2019-10-31
-			 * @param string $s
-			 * @return string
-			 */
-			$d = function($s) use($tz) {
+			$d = function(string $s) use($tz):string {
 				$f = 'Y-m-d H:i:s'; /** @var string $f */
 				$dt = new \DateTime(date($f, strtotime($s)), $tz);	/** @var \DateTime $dt */
 				return date($f, $dt->format('U'));
-			};
+			}; /** @var \Closure $d */
 			$c->addFieldToFilter('updated_at', ['from' => $d($since), 'to' => $d('2035-01-01 23:59:59')]);
 		}
 	}
@@ -59,10 +53,10 @@ final class Filter {
 	 * 2020-05-06
 	 * "Provide an ability to filter the `jumagext/response/catalog` response by a concrete product":
 	 * https://github.com/justuno-com/m2/issues/12
-	 * @used-by p()
+	 * @used-by self::p()
 	 * @param C|OC|PC $c
 	 */
-	private static function byProduct(C $c) {
+	private static function byProduct(C $c):void {
 		if ($id = ju_request('id')) { /** @var string $id */
 			$c->addFieldToFilter('entity_id', $id);
 		}

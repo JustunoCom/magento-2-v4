@@ -25,9 +25,8 @@ class Catalog extends _P {
 	 * @used-by \Magento\Framework\App\Action\Action::dispatch():
 	 * 		$result = $this->execute();
 	 * https://github.com/magento/magento2/blob/2.2.1/lib/internal/Magento/Framework/App/Action/Action.php#L84-L125
-	 * @return Json
 	 */
-	function execute() {return R::p(function() {
+	function execute():Json {return R::p(function():array {
 		# 2020-11-23
 		# If the flat mode is enabled, then the products collection misses disabled products,
 		# because the `catalog_product_flat_<store>` table does not contain disabled products at least in Magento 2.4.0.
@@ -70,7 +69,7 @@ class Catalog extends _P {
 		if (ju_request('id') && !count($pc)) {
 			Diagnostic::p();
 		}
-		return array_values(ju_map($pc, function(P $p) use($brand) { /** @var array(string => mixed) $r */
+		return array_values(ju_map($pc, function(P $p) use($brand):array { /** @var array(string => mixed) $r */
 			$rs = ju_review_summary($p); /** @var RS $rs */
 			$cc = $p->getCategoryCollection(); /** @var CC $cc */
 			$price = self::price($p); /** @var float $price */
@@ -156,11 +155,9 @@ class Catalog extends _P {
 
 	/**
 	 * 2021-02-05
-	 * @used-by execute()
-	 * @param P $p
-	 * @return float
+	 * @used-by self::execute()
 	 */
-	private static function price(P $p) {
+	private static function price(P $p):float {
 		# 2021-03-24 "Replace `getPrice` with `getFinalPrice`": https://github.com/justuno-com/m2/issues/36
 		$r = $p->getFinalPrice(); /** @var float $r */
 		# 2021-02-05

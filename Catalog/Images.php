@@ -7,10 +7,9 @@ final class Images {
 	/**
 	 * 2019-10-30
 	 * @used-by \Justuno\M2\Controller\Response\Catalog::execute()
-	 * @param P $p
 	 * @return array(array(string => mixed))
 	 */
-	static function p(P $p) {return ju_map_kr(function($idx, _DO $i) use($p) {return [
+	static function p(P $p):array {return ju_map_kr(function($idx, _DO $i) use($p):array {return [
 		# 2019-10-30
 		# «"ImageURL" should be "imageURL1" and we should have "imageURL2" and "ImageURL3"
 		# if there are image available»: https://github.com/justuno-com/m1/issues/17
@@ -28,7 +27,7 @@ final class Images {
 	# 2021-02-05
 	# «on the parent object, it's returning a lot more than ImageURL1 - 3. I only need the first three»:
 	# https://github.com/justuno-com/m2/issues/27
-	];}, array_slice(ju_sort(array_values($p->getMediaGalleryImages()->getItems()), function(_DO $a, _DO $b) {
+	];}, array_slice(ju_sort(array_values($p->getMediaGalleryImages()->getItems()), function(_DO $a, _DO $b):int {
 		# 2020-09-29
 		# "Images with the «_hero_» string should have a priority in product feeds": https://github.com/justuno-com/m2/issues/17
 		$f = function(_DO $i) {return (int)ju_contains($i['file'], '_hero_');};

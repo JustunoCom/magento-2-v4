@@ -7,10 +7,9 @@ final class Variants {
 	/**
 	 * 2019-10-30
 	 * @used-by \Justuno\M2\Controller\Response\Inventory::execute()
-	 * @param P $p
 	 * @return array(array(string => mixed))
 	 */
-	static function p(P $p) { /** @var array(array(string => mixed)) $r */
+	static function p(P $p):array { /** @var array(array(string => mixed)) $r */
 		if (!ju_configurable($p)) {
 			# 2019-30-31
 			# "Products: some Variants are objects instead of arrays of objects": https://github.com/justuno-com/m1/issues/32
@@ -58,7 +57,7 @@ final class Variants {
 			 * https://github.com/magento/magento2/blob/2.0.0/app/code/Magento/ConfigurableProduct/Model/Product/Type/Configurable.php#L420-L468
 			 */
 			/** @var P[] $ch */
-			$r = !($ch = array_filter($ct->getUsedProducts($p), function(P $p) {return !$p->isDisabled();}))
+			$r = !($ch = array_filter($ct->getUsedProducts($p), function(P $p):bool {return !$p->isDisabled();}))
 				# 2020-11-24
 				# 1) "A configurable product without any associated child products should not produce variants":
 				# https://github.com/justuno-com/m2/issues/21
@@ -67,7 +66,7 @@ final class Variants {
 				# https://github.com/justuno-com/m2/issues/13#issue-612869130
 				# 3) It should solve «Products of type `configurable` do not have a quantity»
 				# https://github.com/justuno-com/m2/issues/20
-				? [] : array_values(ju_map($ch, function(P $c) {return self::variant($c);}))
+				? [] : array_values(ju_map($ch, function(P $c):array {return self::variant($c);}))
 			;
 		}
 		return $r;
@@ -75,9 +74,8 @@ final class Variants {
 
 	/**
 	 * 2019-10-30
-	 * @used-by p()
-	 * @param P $p
+	 * @used-by self::p()
 	 * @return array(string => mixed)
 	 */
-	private static function variant(P $p) {return ['ID' => $p->getId(), 'Quantity' => ju_qty($p)];}
+	private static function variant(P $p):array {return ['ID' => $p->getId(), 'Quantity' => ju_qty($p)];}
 }
