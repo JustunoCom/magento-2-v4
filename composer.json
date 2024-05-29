@@ -1,11 +1,16 @@
 {
-	"name": "justuno.com/magento-2-v4"
+	"name": "justuno/magento-2-v4"
 	,"version": "1.2.1"
 	,"description": "Justuno module for Magento 2"
 	,"type": "magento2-module"
 	,"homepage": "https://github.com/justunoCom/magento-2-v4"
 	,"license": "MIT"
 	,"authors": [{
+		"name": "Travis Logan"
+		,"email": "travis@justuno.com"
+		,"homepage": "https://www.justuno.com"
+		,"role": "Developer"
+	},{
 		"name": "Dmitrii Fediuk"
 		,"email": "admin@mage2.pro"
 		,"homepage": "https://upwork.com/fl/mage2pro"
