@@ -8,7 +8,7 @@ use Magento\Framework\App\Router\ActionList as Sb;
 # 2020-03-15
 # "Replace the `/justuno/service-worker.js` URL with  `/apps/justuno/service-worker.js`":
 # https://github.com/justuno-com/m2/issues/11
-final class ActionList {
+class ActionList {
 	/**
 	 * 2020-03-14
 	 * @see \Magento\Framework\App\Router\ActionList::get()

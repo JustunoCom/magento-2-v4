@@ -3,7 +3,7 @@ namespace Justuno\M2\Catalog;
 use Magento\Catalog\Model\Product as P;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 # 2019-10-30
-final class Variants {
+class Variants {
 	/**
 	 * 2019-10-30
 	 * @used-by \Justuno\M2\Controller\Response\Catalog::execute()
