@@ -5,7 +5,7 @@ use Justuno\M2\Store as S;
 # 2021-02-25
 # "Provide a diagnostic message if the requested product is not eligible for the feed":
 # https://github.com/justuno-com/m2/issues/32
-final class Diagnostic {
+class Diagnostic {
 	/**
 	 * 2021-02-25
 	 * @used-by \Justuno\M2\Controller\Response\Catalog::execute()

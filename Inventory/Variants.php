@@ -3,7 +3,7 @@ namespace Justuno\M2\Inventory;
 use Magento\Catalog\Model\Product as P;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 # 2020-05-06
-final class Variants {
+class Variants {
 	/**
 	 * 2019-10-30
 	 * @used-by \Justuno\M2\Controller\Response\Inventory::execute()

@@ -6,7 +6,7 @@ use Magento\Framework\DB\Select as Sel;
 use Magento\Store\Api\Data\StoreInterface as IS;
 use Magento\Store\Model\ScopeInterface as SS;
 # 2021-01-28, 2021-02-25 "Make the module multi-store aware": https://github.com/justuno-com/m2/issues/24
-final class Store {
+class Store {
 	/**
 	 * 2021-01-28 "Make the module multi-store aware": https://github.com/justuno-com/m2/issues/24
 	 * @used-by \Justuno\M2\Controller\Response\Catalog::execute()

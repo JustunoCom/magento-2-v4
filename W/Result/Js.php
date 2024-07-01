@@ -20,7 +20,7 @@ class Js extends \Justuno\Core\Framework\W\Result {
 	 * @see \Justuno\Core\Framework\W\Result::__toString()
 	 * @used-by self::render()
 	 */
-	final function __toString():string {return $this->_r;}
+	function __toString():string {return $this->_r;}
 
 	/**
 	 * 2020-03-14
@@ -29,7 +29,7 @@ class Js extends \Justuno\Core\Framework\W\Result {
 	 * @used-by \Justuno\Core\Framework\W\Result::renderResult()
 	 * @param IR|R $r
 	 */
-	final protected function render(IR $r):void {
+	protected function render(IR $r):void {
 		$r->setBody($this->__toString());
 		ju_response_content_type('application/javascript', $r);
 	}
@@ -46,7 +46,7 @@ class Js extends \Justuno\Core\Framework\W\Result {
 	 * 2020-03-14
 	 * @used-by \Justuno\M2\Controller\Js::execute()
 	 */
-	final static function i(string $name):self {
+	static function i(string $name):self {
 		$i = new self; /** @var self $i */
 		$i->_r = ju_module_file_read(__CLASS__, "js/$name", 'js', function($f) {return file_get_contents($f);});
 		return $i;

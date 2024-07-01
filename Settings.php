@@ -4,7 +4,7 @@ namespace Justuno\M2;
  * 2021-03-06
  * @method static Settings s()
  */
-final class Settings extends \Justuno\Core\Config\Settings {
+class Settings extends \Justuno\Core\Config\Settings {
 	/**
 	 * 2021-03-06
 	 * @used-by \Justuno\M2\Block\Js::_toHtml()

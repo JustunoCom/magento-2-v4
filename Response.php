@@ -2,7 +2,7 @@
 namespace Justuno\M2;
 use Justuno\Core\Framework\W\Result\Json;
 # 2019-10-30
-final class Response {
+class Response {
 	/**
 	 * 2019-11-20
 	 * @used-by \Justuno\M2\Controller\Cart\Add::execute()
