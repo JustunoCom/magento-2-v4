@@ -5,7 +5,7 @@ use Magento\Catalog\Model\ResourceModel\Product\Collection as PC;
 use Magento\Framework\Data\Collection\AbstractDb as C;
 use Magento\Sales\Model\ResourceModel\Order\Collection as OC;
 # 2019-10-31
-class Filter {
+final class Filter {
 	/**
 	 * 2019-10-31
 	 * @used-by \Justuno\M2\Controller\Response\Catalog::execute()

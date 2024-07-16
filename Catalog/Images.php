@@ -3,7 +3,7 @@ namespace Justuno\M2\Catalog;
 use Magento\Catalog\Model\Product as P;
 use Magento\Framework\DataObject as _DO;
 # 2019-10-30
-class Images {
+final class Images {
 	/**
 	 * 2019-10-30
 	 * @used-by \Justuno\M2\Controller\Response\Catalog::execute()

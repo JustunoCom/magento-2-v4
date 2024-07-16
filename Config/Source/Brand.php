@@ -1,7 +1,7 @@
 <?php
 namespace Justuno\M2\Config\Source;
 # 2019-11-15
-class Brand extends \Justuno\Core\Config\Source {
+final class Brand extends \Justuno\Core\Config\Source {
 	/**
 	 * 2019-11-15
 	 * @override
