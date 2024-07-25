@@ -1,22 +1,39 @@
 {
-	"name": "justuno/magento-2-v4"
-	,"version": "1.2.3"
-	,"description": "Justuno module for Magento 2"
-	,"type": "magento2-module"
-	,"homepage": "https://github.com/justunoCom/magento-2-v4"
-	,"license": "MIT"
-	,"authors": [{
-		"name": "Travis Logan"
-		,"email": "travis@justuno.com"
-		,"homepage": "https://www.justuno.com"
-		,"role": "Developer"
-	},{
-		"name": "Dmitrii Fediuk"
-		,"email": "admin@mage2.pro"
-		,"homepage": "https://upwork.com/fl/mage2pro"
-		,"role": "Developer"
-	}]
-	,"require": {"justuno.com/core": ">=1.6.8"}
-	,"autoload": {"files": ["registration.php"], "psr-4": {"Justuno\\M2\\": ""}}
-	,"keywords": ["Magento 2"]
+	"name": "justuno/magento-2-v4",
+	"version": "4.0.0",
+	"description": "Justuno integration for Magento 2",
+	"type": "magento2-module",
+	"homepage": "https://github.com/justunoCom/magento-2-v4",
+	"license": [
+		"OSL-3.0",
+		"AFL-3.0"
+	],
+	"authors": [
+		{
+			"name": "Travis Logan",
+			"email": "travis@justuno.com",
+			"homepage": "https://www.justuno.com",
+			"role": "Developer"
+		},
+		{
+			"name": "Rizwan Ali",
+			"email": "riz@bitspro.com",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": "~7.1.3||~7.2.0||~7.3.0||~7.4.0||~8.1.0"
+	},
+	"autoload": {
+		"files": [
+			"registration.php"
+		],
+		"psr-4": {
+			"Justuno\\M2\\": ""
+		}
+	},
+	"keywords": [
+		"Magento 2",
+		"Justuno"
+	]
 }

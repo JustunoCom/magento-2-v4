@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Webapi\Model\Authorization\TokenUserContext">
+        <plugin name="justuno_api_auth" type="Justuno\M2\Plugin\JustunoApiAuth" sortOrder="10" />
+    </type>
+    <preference for="Justuno\M2\Api\JustunoInterface" type="Justuno\M2\Model\Api\JustunoApi" />
+</config>

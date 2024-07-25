@@ -1,0 +1,45 @@
+<?php
+/** @var \Justuno\M2\Block\Script $block */
+$apiKey = $block->getApiKey();
+$subDomain = $block->getSubDomain();
+?>
+<script data-cfasync="false">
+    window.ju4_auth = "<?= $apiKey ?>";
+    window.ju4_num = "<?= $apiKey ?>";
+    window.ju4_asset_host = "https://<?= $subDomain ?>/embed";
+    window.ju4_pApi = "https://<?= $subDomain ?>";
+    (function(i,s,o,g,r,a,m){i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)};a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script",ju4_asset_host+"/ju_init.js?v=2","ju4app");
+
+    // Add page type tracking
+    <?php
+    $pageType = 'other';
+    if ($block->getRequest()->getFullActionName() == 'cms_index_index') {
+        $pageType = 'home';
+    } elseif ($block->getRequest()->getFullActionName() == 'catalog_product_view') {
+        $pageType = 'product';
+    } elseif ($block->getRequest()->getFullActionName() == 'catalog_category_view') {
+        $pageType = 'category';
+    } elseif ($block->getRequest()->getFullActionName() == 'checkout_cart_index') {
+        $pageType = 'cart';
+    } elseif ($block->getRequest()->getFullActionName() == 'checkout_index_index') {
+        $pageType = 'checkout';
+    }
+    ?>
+    ju4app('local', 'pageType', '<?= $pageType ?>');
+    window._jupagetype = '<?= $pageType ?>';
+
+    <?php if ($block->getRequest()->getFullActionName() == 'catalog_product_view'): ?>
+        <?php $product = $block->getRegistry()->registry('current_product'); ?>
+        <?php if ($product): ?>
+            ju4app('local', 'prodId', '<?= $product->getId() ?>');
+            window._juprodId = '<?= $product->getId() ?>';
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <?php if ($block->isCustomerLoggedIn()): ?>
+        ju4app('local', 'custId', '<?= $block->getCustomerEmail() ?>');
+        window._jucustId = '<?= $block->getCustomerEmail() ?>';
+    <?php endif; ?>
+</script>
+
+<?= $block->getJustunoScript() ?>
