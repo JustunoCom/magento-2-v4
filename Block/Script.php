@@ -35,11 +35,6 @@ class Script extends Template
         return $this->justunoHelper->getSubDomain();
     }
 
-    public function getJustunoScript()
-    {
-        return $this->registry->registry('justuno_script');
-    }
-
     public function isCustomerLoggedIn()
     {
         return $this->customerSessionFactory->create()->isLoggedIn();
@@ -47,6 +42,9 @@ class Script extends Template
 
     public function getCustomerEmail()
     {
-        return $this->customerSessionFactory->create()->getCustomer()->getEmail();
+        if ($this->isCustomerLoggedIn()) {
+            return $this->customerSessionFactory->create()->getCustomer()->getEmail();
+        }
+        return null;
     }
 }

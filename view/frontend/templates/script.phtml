@@ -1,45 +1,169 @@
 <?php
 /** @var \Justuno\M2\Block\Script $block */
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->get(\Magento\Customer\Model\Session::class);
+$checkoutSession = $objectManager->get(\Magento\Checkout\Model\Session::class);
 $apiKey = $block->getApiKey();
 $subDomain = $block->getSubDomain();
-?>
-<script data-cfasync="false">
-    window.ju4_auth = "<?= $apiKey ?>";
-    window.ju4_num = "<?= $apiKey ?>";
-    window.ju4_asset_host = "https://<?= $subDomain ?>/embed";
-    window.ju4_pApi = "https://<?= $subDomain ?>";
-    (function(i,s,o,g,r,a,m){i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)};a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script",ju4_asset_host+"/ju_init.js?v=2","ju4app");
+$baseURL = "https://" . $block->escapeJs($subDomain);
+$url = "https://staging.justone.ai/embed/ju_init.js?v=2";
 
-    // Add page type tracking
-    <?php
-    $pageType = 'other';
-    if ($block->getRequest()->getFullActionName() == 'cms_index_index') {
-        $pageType = 'home';
-    } elseif ($block->getRequest()->getFullActionName() == 'catalog_product_view') {
-        $pageType = 'product';
-    } elseif ($block->getRequest()->getFullActionName() == 'catalog_category_view') {
-        $pageType = 'category';
-    } elseif ($block->getRequest()->getFullActionName() == 'checkout_cart_index') {
-        $pageType = 'cart';
-    } elseif ($block->getRequest()->getFullActionName() == 'checkout_index_index') {
-        $pageType = 'checkout';
+// Determine if it's a product page and get the product ID
+$isProductPage = false;
+$productId = null;
+if ($block->getRequest()->getFullActionName() == 'catalog_product_view') {
+    $isProductPage = true;
+    $product = $objectManager->get(\Magento\Framework\Registry::class)->registry('current_product');
+    if ($product) {
+        $productId = $product->getId();
     }
-    ?>
-    ju4app('local', 'pageType', '<?= $pageType ?>');
-    window._jupagetype = '<?= $pageType ?>';
+}
 
-    <?php if ($block->getRequest()->getFullActionName() == 'catalog_product_view'): ?>
-        <?php $product = $block->getRegistry()->registry('current_product'); ?>
-        <?php if ($product): ?>
-            ju4app('local', 'prodId', '<?= $product->getId() ?>');
-            window._juprodId = '<?= $product->getId() ?>';
-        <?php endif; ?>
+// Check if an order was just placed
+$lastOrderId = $checkoutSession->getLastOrderId();
+$orderData = null;
+if ($lastOrderId) {
+    $order = $objectManager->create(\Magento\Sales\Model\Order::class)->load($lastOrderId);
+    if ($order->getId()) {
+        $orderItems = [];
+        foreach ($order->getAllVisibleItems() as $item) {
+            $orderItems[] = [
+                'productID' => (string)$item->getProductId(),
+                'variationID' => (string)$item->getItemId(),
+                'sku' => $item->getSku(),
+                'name' => $item->getName(),
+                'qty' => (int)$item->getQtyOrdered(),
+                'price' => (int)($item->getPrice() * 100) // Convert to cents
+            ];
+        }
+        $orderData = [
+            'orderID' => (string)$order->getIncrementId(),
+            'grandTotal' => (int)($order->getGrandTotal() * 100),
+            'subTotal' => (int)($order->getSubtotal() * 100),
+            'tax' => (int)($order->getTaxAmount() * 100),
+            'shipping' => (int)($order->getShippingAmount() * 100),
+            'discount' => (int)(abs($order->getDiscountAmount()) * 100),
+            'currency' => $order->getOrderCurrencyCode(),
+            'discountCodes' => $order->getCouponCode() ? [$order->getCouponCode()] : [],
+            'cartItems' => $orderItems
+        ];
+    }
+}
+?>
+<script>
+    window.ju4Config = {
+        auth: "<?= $block->escapeJs($apiKey) ?>",
+        num: "<?= $block->escapeJs($apiKey) ?>",
+        assetHost: "https://staging.justone.ai/embed",
+        pApi: "<?= $baseURL ?>"
+    };
+    window._juplatformtype = "magento";
+    window.ju4_auth = window.ju4Config.auth;
+    window.ju4_num = window.ju4Config.num;
+    window.ju4_asset_host = window.ju4Config.assetHost;
+    window.ju4_pApi = window.ju4Config.pApi;
+    window.ju4_api="https://api.justuno.com";
+    
+    <?php if ($customerSession->isLoggedIn()): ?>
+    window._jucustId = "<?= $block->escapeJs($customerSession->getCustomerId()) ?>";
+    window._jucustomId = "<?= $block->escapeJs($customerSession->getCustomerId()) ?>";
     <?php endif; ?>
-
-    <?php if ($block->isCustomerLoggedIn()): ?>
-        ju4app('local', 'custId', '<?= $block->getCustomerEmail() ?>');
-        window._jucustId = '<?= $block->getCustomerEmail() ?>';
+    <?php if ($isProductPage && $productId): ?>
+    window._jupagetype = "product";
+    window._juprodId = "<?= $block->escapeJs($productId) ?>";
     <?php endif; ?>
 </script>
+<script data-cfasync="false">
+    (function(i,s,o,g,r,a,m){i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)};a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script',ju4_asset_host+'/ju_init.js?v=2','ju4app');
+</script>
+<script>
+function initJustuno() {
+    if (window.ju4app.initialized) return;
+    window.ju4app.initialized = true;
+    window.ju4app('initFunc', function() {
+        console.log('Justuno initialized');
+        
+        <?php if ($orderData): ?>
+        // Send order data if an order was just placed
+        window.ju4app('order', <?= json_encode($orderData) ?>);
+        <?php endif; ?>
+        
+        <?php $customJs = $block->getCustomJsContent(); ?>
+        <?php if ($customJs): ?>
+            <?= $customJs ?>
+        <?php endif; ?>
+    });
+}
 
-<?= $block->getJustunoScript() ?>
+function waitForJu4app() {
+    if (typeof window.ju4app === 'function') {
+        initJustuno();
+    } else {
+        setTimeout(waitForJu4app, 500);  // Check every 500ms
+    }
+}
+
+waitForJu4app();
+
+require(['jquery', 'Magento_Customer/js/customer-data'], function($, customerData) {
+    var previousCart = {};
+
+    function sendUpdatedItemData(item, qty) {
+        if (window.ju4app) {
+            window.ju4app('cartSync', {
+                items: [{
+                    productID: item.product_id,
+                    variationID: item.item_id,
+                    sku: item.sku,
+                    price: item.price * 100, // Convert to cents
+                    qty: qty,
+                    name: item.name,
+                    discount: (item.discount_amount || 0) * 100 // Convert to cents
+                }],
+                cart: {
+                    currency: item.currency_code,
+                    cartID: customerData.get('cart')().id
+                }
+            });
+        }
+    }
+
+    function detectCartChanges(newCart) {
+        if (!newCart.items) return;
+
+        // Check for new or updated items
+        newCart.items.forEach(function(item) {
+            var prevItem = previousCart.items ? previousCart.items.find(i => i.item_id === item.item_id) : null;
+            if (!prevItem || prevItem.qty !== item.qty) {
+                sendUpdatedItemData(item, item.qty);
+            }
+        });
+
+        // Check for removed items
+        if (previousCart.items) {
+            previousCart.items.forEach(function(prevItem) {
+                if (!newCart.items.some(i => i.item_id === prevItem.item_id)) {
+                    sendUpdatedItemData(prevItem, 0);
+                }
+            });
+        }
+
+        // Update previous cart
+        previousCart = JSON.parse(JSON.stringify(newCart));
+    }
+
+    // Subscribe to cart changes
+    customerData.get('cart').subscribe(function (updatedCart) {
+        detectCartChanges(updatedCart);
+    });
+
+    // Initial cart sync
+    var initialCart = customerData.get('cart')();
+    if (initialCart && initialCart.items) {
+        initialCart.items.forEach(function(item) {
+            sendUpdatedItemData(item, item.qty);
+        });
+        previousCart = JSON.parse(JSON.stringify(initialCart));
+    }
+});
+</script>
