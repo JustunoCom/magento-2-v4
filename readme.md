@@ -70,7 +70,7 @@ bin/magento setup:static-content:deploy
 1. Log in to your Magento admin panel.
 2. Navigate to Stores > Configuration > Justuno > General Settings.
 3. Enter your Justuno API Key.
-4. Select your preferred subdomain (justone.ai or justuno.com).
+4. Select your preferred subdomain or justone.ai.
 5. Click on "Generate Token" to create a WooCommerce-compatible token for API authentication.
 6. Save the configuration.
 

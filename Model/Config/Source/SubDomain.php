@@ -9,7 +9,6 @@ class SubDomain implements OptionSourceInterface
     {
         return [
             ['value' => 'justone.ai', 'label' => __('justone.ai')],
-            ['value' => 'justuno.com', 'label' => __('justuno.com')]
         ];
     }
 }
