@@ -1,45 +1,27 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
-	<system>
-		<tab id="justuno" translate="label" sortOrder="1000">
-			<label>
-				Justuno
-			</label>
-		</tab>
-		<section id="justuno" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-			<label>
-				Settings
-			</label>
-			<tab>
-				justuno
-			</tab>
-			<resource>
-				Justuno_M2::config
-			</resource>
-			<group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-				<label>
-					General Configuration
-				</label>
-				<field id="api_key" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>
-						Justuno Account Number
-					</label>
-				</field>
-				<field id="woocommerce_token" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>
-						Magento Token
-					</label>
-					<frontend_model>
-						Justuno\M2\Block\Adminhtml\System\Config\Form\Field\GenerateToken
-					</frontend_model>
-				</field>
-				<!--
-				<field id="sub_domain" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-				<label>Subdomain</label>
-				<source_model>Justuno\M2\Model\Config\Source\SubDomain</source_model>
-				</field>
-				-->
-			</group>
-		</section>
-	</system>
+    <system>
+        <tab id="justuno" translate="label" sortOrder="1000">
+            <label>Justuno</label>
+        </tab>
+        <section id="justuno" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Settings</label>
+            <tab>justuno</tab>
+            <resource>Justuno_M2::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Configuration</label>
+                <field id="api_key" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Justuno Account Number</label>
+                </field>
+                <field id="woocommerce_token" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Magento Token</label>
+                    <frontend_model>Justuno\M2\Block\Adminhtml\System\Config\Form\Field\GenerateToken</frontend_model>
+                </field>
+                <!--<field id="sub_domain" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">-->
+                <!--    <label>Subdomain</label>-->
+                <!--    <source_model>Justuno\M2\Model\Config\Source\SubDomain</source_model>-->
+                <!--</field>-->
+            </group>
+        </section>
+    </system>
 </config>

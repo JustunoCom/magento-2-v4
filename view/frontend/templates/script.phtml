@@ -45,7 +45,7 @@ $orderData = $viewModel->getOrderData();
     "*": {
         "Justuno_M2/js/justuno": {
             "orderData": <?= /* @noEscape */ json_encode($orderData) ?>,
-            "customJs": "<?= $block->escapeJs($block->getCustomJsContent()) ?>"
+            "customJs": "<?= $block->escapeJs($block->getCustomJsContent()) ?>",
         }
     }
 }

@@ -6,10 +6,12 @@
                 <value id="justuno-staging" type="host">https://staging.justone.ai</value>
                 <value id="justuno" type="host">https://justone.ai</value>
                 <value id="justuno-www" type="host">https://www.justone.ai</value>
-                <value id="localhost-http" type="host">http://localhost:10001</value>
-                <value id="localhost-https" type="host">https://localhost:10001</value>
                 <value id="unsafe-inline" type="host">'unsafe-inline'</value>
                 <value id="unsafe-eval" type="host">'unsafe-eval'</value>
+                <value id="justuno-google-fonts" type="host">https://fonts.googleapis.com</value>
+                <value id="justuno-google-static-fonts" type="host">https://fonts.gstatic.com</value>
+                <value id="justuno-font-awesome" type="host">https://ka-p.fontawesome.com</value>
+                <value id="justuno-font-awesome-kit" type="host">https://kit.fontawesome.com</value>
             </values>
         </policy>
         <policy id="style-src">
@@ -17,9 +19,11 @@
                 <value id="justuno-staging" type="host">https://staging.justone.ai</value>
                 <value id="justuno" type="host">https://justone.ai</value>
                 <value id="justuno-www" type="host">https://www.justone.ai</value>
-                <value id="localhost-http" type="host">http://localhost:10001</value>
-                <value id="localhost-https" type="host">https://localhost:10001</value>
                 <value id="unsafe-inline" type="host">'unsafe-inline'</value>
+                <value id="justuno-google-fonts" type="host">https://fonts.googleapis.com</value>
+                <value id="justuno-google-static-fonts" type="host">https://fonts.gstatic.com</value>
+                <value id="justuno-font-awesome" type="host">https://ka-p.fontawesome.com</value>
+                <value id="justuno-font-awesome-kit" type="host">https://kit.fontawesome.com</value>
             </values>
         </policy>
         <policy id="img-src">
@@ -27,9 +31,11 @@
                 <value id="justuno-staging" type="host">https://staging.justone.ai</value>
                 <value id="justuno" type="host">https://justone.ai</value>
                 <value id="justuno-www" type="host">https://www.justone.ai</value>
-                <value id="localhost-http" type="host">http://localhost:10001</value>
-                <value id="localhost-https" type="host">https://localhost:10001</value>
                 <value id="data" type="host">data:</value>
+                <value id="justuno-google-fonts" type="host">https://fonts.googleapis.com</value>
+                <value id="justuno-google-static-fonts" type="host">https://fonts.gstatic.com</value>
+                <value id="justuno-font-awesome" type="host">https://ka-p.fontawesome.com</value>
+                <value id="justuno-font-awesome-kit" type="host">https://kit.fontawesome.com</value>
             </values>
         </policy>
         <policy id="connect-src">
@@ -37,8 +43,10 @@
                 <value id="justuno-staging" type="host">https://staging.justone.ai</value>
                 <value id="justuno" type="host">https://justone.ai</value>
                 <value id="justuno-www" type="host">https://www.justone.ai</value>
-                <value id="localhost-http" type="host">http://localhost:10001</value>
-                <value id="localhost-https" type="host">https://localhost:10001</value>
+                <value id="justuno-google-fonts" type="host">https://fonts.googleapis.com</value>
+                <value id="justuno-google-static-fonts" type="host">https://fonts.gstatic.com</value>
+                <value id="justuno-font-awesome" type="host">https://ka-p.fontawesome.com</value>
+                <value id="justuno-font-awesome-kit" type="host">https://kit.fontawesome.com</value>
             </values>
         </policy>
         <policy id="frame-src">
@@ -46,8 +54,10 @@
                 <value id="justuno-staging" type="host">https://staging.justone.ai</value>
                 <value id="justuno" type="host">https://justone.ai</value>
                 <value id="justuno-www" type="host">https://www.justone.ai</value>
-                <value id="localhost-http" type="host">http://localhost:10001</value>
-                <value id="localhost-https" type="host">https://localhost:10001</value>
+                <value id="justuno-google-fonts" type="host">https://fonts.googleapis.com</value>
+                <value id="justuno-google-static-fonts" type="host">https://fonts.gstatic.com</value>
+                <value id="justuno-font-awesome" type="host">https://ka-p.fontawesome.com</value>
+                <value id="justuno-font-awesome-kit" type="host">https://kit.fontawesome.com</value>
             </values>
         </policy>
         <policy id="font-src">
@@ -55,9 +65,11 @@
                 <value id="justuno-staging" type="host">https://staging.justone.ai</value>
                 <value id="justuno" type="host">https://justone.ai</value>
                 <value id="justuno-www" type="host">https://www.justone.ai</value>
-                <value id="localhost-http" type="host">http://localhost:10001</value>
-                <value id="localhost-https" type="host">https://localhost:10001</value>
                 <value id="data" type="host">data:</value>
+                <value id="justuno-google-fonts" type="host">https://fonts.googleapis.com</value>
+                <value id="justuno-google-static-fonts" type="host">https://fonts.gstatic.com</value>
+                <value id="justuno-font-awesome" type="host">https://ka-p.fontawesome.com</value>
+                <value id="justuno-font-awesome-kit" type="host">https://kit.fontawesome.com</value>
             </values>
         </policy>
     </policies>
