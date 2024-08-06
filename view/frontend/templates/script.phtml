@@ -10,6 +10,7 @@ $url = "https://staging.justone.ai/embed/ju_init.js?v=2";
 $isProductPage = $viewModel->isProductPage();
 $productId = $viewModel->getProductId();
 $orderData = $viewModel->getOrderData();
+$currencyCode = $block->getCurrentCurrencyCode();
 ?>
 
 <script>
@@ -44,8 +45,10 @@ $orderData = $viewModel->getOrderData();
 {
     "*": {
         "Justuno_M2/js/justuno": {
-            "orderData": <?= /* @noEscape */ json_encode($orderData) ?>,
+            "orderData": <?= /* @noEscape */ $orderData != null ? json_encode($orderData) : 'null' ?>,
             "customJs": "<?= $block->escapeJs($block->getCustomJsContent()) ?>",
+            "version": "<?= time() ?>",
+            "currencyCode": "<?= $block->escapeJs($currencyCode) ?>"
         }
     }
 }

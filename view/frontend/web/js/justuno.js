@@ -6,7 +6,7 @@ define([
 
     return function (config) {
         var previousCart = {};
-
+        var currencyCode = config.currencyCode;
         function initJustuno() {
             if (window.ju4app.initialized) return;
             window.ju4app.initialized = true;
@@ -39,14 +39,15 @@ define([
                     items: [{
                         productID: item.product_id,
                         variationID: item.item_id,
-                        sku: item.sku,
+                        sku: item.product_sku,
                         price: item.product_price_value * 100,
                         qty: qty,
-                        name: item.name,
+                        name: item.product_name,
+                        currency: currencyCode,
                         discount: (item.discount_amount || 0) * 100
                     }],
                     cart: {
-                        currency: item.currency_code,
+                        currency: currencyCode,
                         cartID: customerData.get('cart')().id
                     }
                 });

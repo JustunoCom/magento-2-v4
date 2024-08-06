@@ -185,11 +185,13 @@ class JustunoApi implements JustunoInterface
                 foreach ($configurableAttributes as $attribute) {
                     $attributeCode = $attribute->getProductAttribute()->getAttributeCode();
                     $optionValue = $variationProduct->getData($attributeCode);
-                    $options[] = $optionValue;
+                    $attributeSource = $attribute->getProductAttribute()->getSource();
+                    $optionText = $attributeSource->getOptionText($optionValue);
+                    $options[] = $optionText;
                 }
-                
+
                 $inventoryQuantity = $this->getInventoryQuantity($variationProduct);
-                $isAvailable = $inventoryQuantity > 0 || $inventoryQuantity == -9999;
+                $isAvailable = $inventoryQuantity > 0;
                 $finalPrice = $variationProduct->getFinalPrice();
                 
                 $variationData = [
@@ -216,7 +218,7 @@ class JustunoApi implements JustunoInterface
             }
         } else {
             $inventoryQuantity = $this->getInventoryQuantity($product);
-            $isAvailable = $inventoryQuantity > 0 || $inventoryQuantity == -9999;
+            $isAvailable = $inventoryQuantity > 0;
             $finalPrice = $product->getFinalPrice();
             
             $variations[] = [
@@ -263,8 +265,25 @@ class JustunoApi implements JustunoInterface
 
     private function getInventoryQuantity($product)
     {
+        if (!$product->getStatus() || !$product->isAvailable()) {
+            return -9999; // Product is disabled or not available
+        }
         $stockItem = $product->getExtensionAttributes()->getStockItem();
-        return $stockItem ? $stockItem->getQty() : -9999;
+        if (!$stockItem) {
+            return 10001; // Default to always in stock if no stock item
+        }
+    
+        if (!$stockItem->getManageStock()) {
+            return 10001; // Not tracking inventory, so always in stock
+        }
+    
+        $qty = $stockItem->getQty();
+    
+        if ($stockItem->getIsInStock()) {
+            return max($qty, 0); // Return actual quantity, but not less than 0
+        }
+    
+        return 10001;
     }
 
     private function getAddToCartUrl($product)
