@@ -38,7 +38,7 @@ bin/magento setup:static-content:deploy
 1. In your Magento 2 root directory, run the following command:
 
 ```
-composer require justuno/module-m2
+composer require justuno/magento-2-v4
 ```
 
 2. Enable the module:
