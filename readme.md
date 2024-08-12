@@ -1,41 +1,116 @@
-[Justuno](https://www.justuno.com) module for Magento 2. 
+# Justuno M2 Plugin for Magento 2
 
-## How to install
+This plugin integrates Justuno with your Magento 2 store, allowing you to use Justuno's marketing and conversion optimization tools.
+
+## Installation
+
+### Manual Installation
+
+1. Download the plugin files.
+2. Create a directory `app/code/Justuno/M2/` in your Magento installation.
+3. Copy the plugin files into this directory.
+4. Enable the module:
+
 ```
-bin/magento maintenance:enable
-rm -rf app/code/Justuno/Jumagext
-rm -rf composer.lock
-composer clear-cache
-composer require justuno/magento-2-v4:*
+bin/magento module:enable Justuno_M2
+```
+
+5. Run the Magento setup upgrade:
+
+```
 bin/magento setup:upgrade
-bin/magento cache:enable
-rm -rf var/di var/generation generated/*
-bin/magento setup:di:compile
-bin/magento cache:enable
-rm -rf pub/static/*
-bin/magento setup:static-content:deploy -f en_US <additional locales>
-bin/magento maintenance:disable
 ```
 
-## How to upgrade
+6. Compile the code (in production mode):
+
 ```
-bin/magento maintenance:enable
-composer remove justuno/magento-2-v4
-rm -rf composer.lock
-composer clear-cache
-composer require justuno/magento-2-v4:*
+bin/magento setup:di:compile
+```
+
+7. Deploy static content (in production mode):\
+
+```
+bin/magento setup:static-content:deploy
+```
+
+### Via Composer (Recommended)
+
+1. In your Magento 2 root directory, run the following command:
+
+```
+composer require justuno/module-m2
+```
+
+2. Enable the module:
+
+```
+bin/magento module:enable Justuno_M2
+```
+
+3. Run the Magento setup upgrade:
+
+```
 bin/magento setup:upgrade
-bin/magento cache:enable
-rm -rf var/di var/generation generated/*
-bin/magento setup:di:compile
-bin/magento cache:enable
-rm -rf pub/static/*
-bin/magento setup:static-content:deploy -f en_US <additional locales>
-bin/magento maintenance:disable
 ```
 
-<h2 id='doc'>Documentation</h2>
+4. Compile the code (in production mode):
 
-- [Where are Justuno settings located in the Magento’s backend?](https://github.com/JustunoCom/m2/blob/master/doc/settings.md#h)
-- [Where to find my «Justuno Account Number»?](https://github.com/JustunoCom/m2/blob/master/doc/account-number.md#h)
-- [How to provide the developer with the database access?](https://github.com/JustunoCom/m2/blob/master/doc/database-access.md#h)
+```
+bin/magento setup:di:compile
+```
+
+5. Deploy static content (in production mode):
+
+```
+bin/magento setup:static-content:deploy
+```
+
+## Setup and Configuration
+
+1. Log in to your Magento admin panel.
+2. Navigate to Stores > Configuration > Justuno > General Settings.
+3. Enter your Justuno API Key.
+4. Select your preferred subdomain or justone.ai.
+5. Click on "Generate Token" to create a WooCommerce-compatible token for API authentication.
+6. Save the configuration.
+
+## Usage
+
+Once installed and configured, the plugin will automatically:
+
+-   Add Justuno tracking scripts to your store
+-   Track product views, add to cart events, and order placements
+-   Provide API endpoints for Justuno to fetch product and order data
+
+## Uninstallation
+
+1. Disable the module:
+
+```
+bin/magento module:disable Justuno_M2
+```
+
+2. Remove the module files:
+
+-   If installed via Composer:
+    ```
+    composer remove justuno/module-m2
+    ```
+-   If installed manually, remove the `app/code/Justuno/M2/` directory.
+
+3. Remove the module from the database:
+
+```
+bin/magento setup:upgrade
+```
+
+4. Clean up the compiled code and generated files:
+
+```
+bin/magento setup:di:compile
+bin/magento setup:static-content:deploy
+```
+
+## License
+
+This plugin is released under the [OSL-3.0 License](https://opensource.org/licenses/OSL-3.0).
