@@ -6,7 +6,7 @@ $viewModel = $block->getViewModel();
 $apiKey = $block->getApiKey();
 $subDomain = $block->getSubDomain();
 $baseURL = "https://" . $block->escapeJs($subDomain);
-$url = "https://staging.justone.ai/embed/ju_init.js?v=2";
+$url = "https://justone.ai/embed/ju_init.js?v=2";
 $isProductPage = $viewModel->isProductPage();
 $productId = $viewModel->getProductId();
 $orderData = $viewModel->getOrderData();
@@ -17,7 +17,7 @@ $currencyCode = $block->getCurrentCurrencyCode();
     window.ju4Config = <?= /* @noEscape */ json_encode([
         'auth' => $apiKey,
         'num' => $apiKey,
-        'assetHost' => "https://staging.justone.ai/embed",
+        'assetHost' => "https://justone.ai/embed",
         'pApi' => $baseURL
     ]) ?>;
     window._juplatformtype = "magento";
