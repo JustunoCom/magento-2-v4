@@ -349,7 +349,7 @@ class JustunoApi implements JustunoInterface
             "IP" => $order->getRemoteIp(),
             "CountryCode" => $order->getBillingAddress() ? $order->getBillingAddress()->getCountryId() : null,
             "LineItems" => $items,
-            //"Customer" => $this->formatCustomer($order),
+            "Customer" => $this->formatCustomer($order),
         ];
     }
 
