@@ -4,63 +4,54 @@ This plugin integrates Justuno with your Magento 2 store, allowing you to use Ju
 
 ## Installation
 
+### Via Composer (Recommended)
+
+1. In your Magento 2 root directory, run the following command:
+```
+composer require justuno/magento-2-v4
+```
+
+2. Enable the module:
+```
+bin/magento module:enable Justuno_M2
+```
+
+3. Run the Magento setup upgrade:
+```
+bin/magento setup:upgrade
+```
+
+4. Compile the code (in production mode):
+```
+bin/magento setup:di:compile
+```
+
+5. Deploy static content (in production mode):
+```
+bin/magento setup:static-content:deploy
+```
+
 ### Manual Installation
 
 1. Download the plugin files.
 2. Create a directory `app/code/Justuno/M2/` in your Magento installation.
 3. Copy the plugin files into this directory.
 4. Enable the module:
-
 ```
 bin/magento module:enable Justuno_M2
 ```
 
 5. Run the Magento setup upgrade:
-
 ```
 bin/magento setup:upgrade
 ```
 
 6. Compile the code (in production mode):
-
 ```
 bin/magento setup:di:compile
 ```
 
 7. Deploy static content (in production mode):\
-
-```
-bin/magento setup:static-content:deploy
-```
-
-### Via Composer (Recommended)
-
-1. In your Magento 2 root directory, run the following command:
-
-```
-composer require justuno/magento-2-v4
-```
-
-2. Enable the module:
-
-```
-bin/magento module:enable Justuno_M2
-```
-
-3. Run the Magento setup upgrade:
-
-```
-bin/magento setup:upgrade
-```
-
-4. Compile the code (in production mode):
-
-```
-bin/magento setup:di:compile
-```
-
-5. Deploy static content (in production mode):
-
 ```
 bin/magento setup:static-content:deploy
 ```
