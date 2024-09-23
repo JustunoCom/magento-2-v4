@@ -19,10 +19,10 @@ interface JustunoInterface
      * @param string $date
      * @param int $limit
      * @param int $page
+     * @param string $created_at_min
      * @return array
      */
-    public function getOrders($date = null, $limit = 20, $page = 1);
-
+    public function getOrders($date = null, $limit = 20, $page = 1, $created_at_min = null);
     /**
      * Get cart data
      *
