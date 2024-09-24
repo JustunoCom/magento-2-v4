@@ -21,6 +21,10 @@
                 <!--    <label>Subdomain</label>-->
                 <!--    <source_model>Justuno\M2\Model\Config\Source\SubDomain</source_model>-->
                 <!--</field>-->
+                <field id="website_id" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Website ID</label>
+                    <comment>Enter the website ID for multi-setup installations. Leave blank for single-site setups.</comment>
+                </field>
             </group>
         </section>
     </system>

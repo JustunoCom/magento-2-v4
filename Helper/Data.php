@@ -24,4 +24,9 @@ class Data extends AbstractHelper
     {
         return $this->scopeConfig->getValue(self::XML_PATH_SUB_DOMAIN, ScopeInterface::SCOPE_STORE, $store);
     }
+
+    public function getWebsiteId($store = null)
+    {
+        return $this->scopeConfig->getValue(self::XML_PATH_WEBSITE_ID, ScopeInterface::SCOPE_STORE, $store);
+    }
 }

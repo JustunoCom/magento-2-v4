@@ -20,6 +20,7 @@ class JustunoApi implements JustunoInterface
     protected $imageHelper;
     protected $pricingHelper;
     protected $urlBuilder;
+    protected $justunoHelper;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
@@ -28,7 +29,8 @@ class JustunoApi implements JustunoInterface
         StoreManagerInterface $storeManager,
         Image $imageHelper,
         PricingHelper $pricingHelper,
-        UrlInterface $urlBuilder
+        UrlInterface $urlBuilder,
+        JustunoHelper $justunoHelper
     ) {
         $this->productRepository = $productRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -37,6 +39,7 @@ class JustunoApi implements JustunoInterface
         $this->imageHelper = $imageHelper;
         $this->pricingHelper = $pricingHelper;
         $this->urlBuilder = $urlBuilder;
+        $this->justunoHelper = $justunoHelper;
     }
 
     public function getProducts($date = null, $limit = 20, $page = 1)
@@ -46,6 +49,11 @@ class JustunoApi implements JustunoInterface
 
         if ($date) {
             $this->searchCriteriaBuilder->addFilter('updated_at', $date, 'gteq');
+        }
+
+        $websiteId = $this->justunoHelper->getWebsiteId();
+        if ($websiteId) {
+            $this->searchCriteriaBuilder->addFilter('website_id', $websiteId);
         }
 
         $searchCriteria = $this->searchCriteriaBuilder->create();
@@ -67,7 +75,7 @@ class JustunoApi implements JustunoInterface
         $variationsData = $this->getProductVariations($product);
         $variations = $variationsData['variations'];
         $variationPriceInfo = $variationsData['cheapestVariant'];
-        
+
         $price = $pricing["Price"];
         $msrp = $pricing["MSRP"];
         $salePrice = $pricing["SalePrice"];
@@ -119,7 +127,8 @@ class JustunoApi implements JustunoInterface
         $gallery = $product->getMediaGalleryImages();
         foreach ($gallery as $image) {
             $images[] = $this->imageHelper->init($product, 'product_page_image_large')->setImageFile($image->getFile())->getUrl();
-            if (count($images) >= 3) break;
+            if (count($images) >= 3)
+                break;
         }
         return $images;
     }
@@ -174,14 +183,13 @@ class JustunoApi implements JustunoInterface
     {
         $variations = [];
         $cheapestVariant = null;
-        
         if ($product->getTypeId() === 'configurable') {
             $configurableAttributes = $product->getTypeInstance()->getConfigurableAttributes($product);
             $configurableProducts = $product->getTypeInstance()->getUsedProducts($product);
-            
+
             foreach ($configurableProducts as $variationProduct) {
                 $options = [];
-                
+
                 foreach ($configurableAttributes as $attribute) {
                     $attributeCode = $attribute->getProductAttribute()->getAttributeCode();
                     $optionValue = $variationProduct->getData($attributeCode);
@@ -193,7 +201,7 @@ class JustunoApi implements JustunoInterface
                 $inventoryQuantity = $this->getInventoryQuantity($variationProduct);
                 $isAvailable = $inventoryQuantity > 0;
                 $finalPrice = $variationProduct->getFinalPrice();
-                
+
                 $variationData = [
                     "ID" => (string) $variationProduct->getId(),
                     "Title" => $variationProduct->getName(),
@@ -205,9 +213,9 @@ class JustunoApi implements JustunoInterface
                     "SalePrice" => $this->pricingHelper->currency($finalPrice, false, false),
                     "InventoryQuantity" => $inventoryQuantity,
                 ];
-                
+
                 $variations[] = $variationData;
-                
+
                 if ($isAvailable && ($cheapestVariant === null || $finalPrice < $cheapestVariant['price'])) {
                     $cheapestVariant = [
                         'price' => $finalPrice,
@@ -220,7 +228,7 @@ class JustunoApi implements JustunoInterface
             $inventoryQuantity = $this->getInventoryQuantity($product);
             $isAvailable = $inventoryQuantity > 0;
             $finalPrice = $product->getFinalPrice();
-            
+
             $variations[] = [
                 "ID" => (string) $product->getId(),
                 "Title" => $product->getName(),
@@ -232,7 +240,7 @@ class JustunoApi implements JustunoInterface
                 "SalePrice" => $this->pricingHelper->currency($finalPrice, false, false),
                 "InventoryQuantity" => $inventoryQuantity,
             ];
-            
+
             if ($isAvailable) {
                 $cheapestVariant = [
                     'price' => $finalPrice,
@@ -241,7 +249,7 @@ class JustunoApi implements JustunoInterface
                 ];
             }
         }
-        
+
         return [
             'variations' => $variations,
             'cheapestVariant' => $cheapestVariant ? [
@@ -272,17 +280,17 @@ class JustunoApi implements JustunoInterface
         if (!$stockItem) {
             return 10001; // Default to always in stock if no stock item
         }
-    
+
         if (!$stockItem->getManageStock()) {
             return 10001; // Not tracking inventory, so always in stock
         }
-    
+
         $qty = $stockItem->getQty();
-    
+
         if ($stockItem->getIsInStock()) {
             return max($qty, 0); // Return actual quantity, but not less than 0
         }
-    
+
         return 10001;
     }
 
@@ -291,13 +299,22 @@ class JustunoApi implements JustunoInterface
         return $this->urlBuilder->getUrl('checkout/cart/add', ['product' => $product->getId()]);
     }
 
-    public function getOrders($date = null, $limit = 20, $page = 1)
+    public function getOrders($date = null, $limit = 20, $page = 1, $createdAtMin = null)
     {
         $this->searchCriteriaBuilder->setPageSize($limit);
         $this->searchCriteriaBuilder->setCurrentPage($page);
 
         if ($date) {
             $this->searchCriteriaBuilder->addFilter('updated_at', $date, 'gteq');
+        }
+
+        if ($createdAtMin) {
+            $this->searchCriteriaBuilder->addFilter('created_at', $createdAtMin, 'gteq');
+        }
+
+        $websiteId = $this->justunoHelper->getWebsiteId();
+        if ($websiteId) {
+            $this->searchCriteriaBuilder->addFilter('store_id', $this->getStoreIdsByWebsiteId($websiteId), 'in');
         }
 
         $searchCriteria = $this->searchCriteriaBuilder->create();
@@ -310,6 +327,8 @@ class JustunoApi implements JustunoInterface
 
         return $result;
     }
+
+
     private function formatOrder($order)
     {
         $items = [];
@@ -321,7 +340,7 @@ class JustunoApi implements JustunoInterface
             } else {
                 $variantId = (string) $item->getProductId();
             }
-    
+
             $items[] = [
                 "ProductID" => (string) $item->getProductId(),
                 "OrderID" => (string) $order->getId(),
@@ -377,7 +396,8 @@ class JustunoApi implements JustunoInterface
 
     private function getCustomerOrdersCount($customerId)
     {
-        if (!$customerId) return 1;
+        if (!$customerId)
+            return 1;
 
         $this->searchCriteriaBuilder->addFilter('customer_id', $customerId);
         $searchCriteria = $this->searchCriteriaBuilder->create();
@@ -387,12 +407,13 @@ class JustunoApi implements JustunoInterface
 
     private function getCustomerTotalSpend($customerId)
     {
-        if (!$customerId) return 0;
+        if (!$customerId)
+            return 0;
 
         $this->searchCriteriaBuilder->addFilter('customer_id', $customerId);
         $searchCriteria = $this->searchCriteriaBuilder->create();
         $orders = $this->orderRepository->getList($searchCriteria);
-        
+
         $totalSpend = 0;
         foreach ($orders->getItems() as $order) {
             $totalSpend += $order->getGrandTotal();
@@ -419,5 +440,11 @@ class JustunoApi implements JustunoInterface
         // This method should be implemented in a separate class that handles the current session's cart
         // For demonstration purposes, we'll return a placeholder
         return false;
+    }
+
+    private function getStoreIdsByWebsiteId($websiteId)
+    {
+        $website = $this->storeManager->getWebsite($websiteId);
+        return $website->getStoreIds();
     }
 }
