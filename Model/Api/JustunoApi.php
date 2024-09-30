@@ -8,8 +8,10 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Helper\Image;
 use Magento\Framework\Pricing\Helper\Data as PricingHelper;
 use Magento\Framework\UrlInterface;
+use Magento\Catalog\Api\CategoryRepositoryInterface;
 
 use Justuno\M2\Api\JustunoInterface;
+use Justuno\M2\Helper\Data as JustunoHelper;
 
 class JustunoApi implements JustunoInterface
 {
@@ -21,6 +23,7 @@ class JustunoApi implements JustunoInterface
     protected $pricingHelper;
     protected $urlBuilder;
     protected $justunoHelper;
+    protected $categoryRepository;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
@@ -30,7 +33,8 @@ class JustunoApi implements JustunoInterface
         Image $imageHelper,
         PricingHelper $pricingHelper,
         UrlInterface $urlBuilder,
-        JustunoHelper $justunoHelper
+        JustunoHelper $justunoHelper,
+        CategoryRepositoryInterface $categoryRepository
     ) {
         $this->productRepository = $productRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -40,6 +44,7 @@ class JustunoApi implements JustunoInterface
         $this->pricingHelper = $pricingHelper;
         $this->urlBuilder = $urlBuilder;
         $this->justunoHelper = $justunoHelper;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function getProducts($date = null, $limit = 20, $page = 1)
@@ -147,11 +152,9 @@ class JustunoApi implements JustunoInterface
 
     private function getProductCategories($product)
     {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $categoryRepository = $objectManager->get(\Magento\Catalog\Api\CategoryRepositoryInterface::class);
         $categories = [];
         foreach ($product->getCategoryCollection() as $category) {
-            $loadedCategory = $categoryRepository->get($category->getId(), 0);
+            $loadedCategory = $this->categoryRepository->get($category->getId(), 0);
             $categories[] = [
                 "ID" => (string) $category->getId(),
                 "Name" => $loadedCategory->getName(),
@@ -327,7 +330,6 @@ class JustunoApi implements JustunoInterface
 
         return $result;
     }
-
 
     private function formatOrder($order)
     {
