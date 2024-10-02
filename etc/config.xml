@@ -6,6 +6,7 @@
                 <api_key></api_key>
                 <woocommerce_token></woocommerce_token>
                 <sub_domain>justone.ai</sub_domain>
+                <website_id></website_id>
             </general>
         </justuno>
     </default>
