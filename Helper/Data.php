@@ -9,6 +9,7 @@ class Data extends AbstractHelper
     const XML_PATH_API_KEY = 'justuno/general/api_key';
     const XML_PATH_WOOCOMMERCE_TOKEN = 'justuno/general/woocommerce_token';
     const XML_PATH_SUB_DOMAIN = 'justuno/general/sub_domain';
+    const XML_PATH_WEBSITE_ID = 'justuno/general/website_id';
 
     public function getApiKey($store = null)
     {
