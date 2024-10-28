@@ -5,7 +5,6 @@ define([
     'use strict';
 
     return function (config) {
-        var previousCart = {};
         var currencyCode = config.currencyCode;
         function initJustuno() {
             if (window.ju4app.initialized) return;
@@ -58,21 +57,8 @@ define([
             if (!newCart.items) return;
 
             newCart.items.forEach(function(item) {
-                var prevItem = previousCart.items ? previousCart.items.find(i => i.item_id === item.item_id) : null;
-                if (!prevItem || prevItem.qty !== item.qty) {
-                    sendUpdatedItemData(item, item.qty);
-                }
-            });
-
-            if (previousCart.items) {
-                previousCart.items.forEach(function(prevItem) {
-                    if (!newCart.items.some(i => i.item_id === prevItem.item_id)) {
-                        sendUpdatedItemData(prevItem, 0);
-                    }
-                });
-            }
-
-            previousCart = JSON.parse(JSON.stringify(newCart));
+                sendUpdatedItemData(item, item.qty);
+            });            
         }
 
         customerData.get('cart').subscribe(function (updatedCart) {
@@ -84,7 +70,6 @@ define([
             initialCart.items.forEach(function(item) {
                 sendUpdatedItemData(item, item.qty);
             });
-            previousCart = JSON.parse(JSON.stringify(initialCart));
         }
     };
 });
