@@ -40,8 +40,8 @@ class JustunoApiAuth
             $token = str_replace('Bearer ', '', $token);
             $configToken = $this->scopeConfig->getValue('justuno/general/woocommerce_token');
             if ($token === $configToken) {
-                // Return the ID of your Justuno integration
-                return 1; // Replace with the actual integration ID
+                // Return the integration ID from your console output
+                return 2;
             }
         }
         return $proceed();
