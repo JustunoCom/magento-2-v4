@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<integrations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Integration:etc/integration/config.xsd">
+	<integration name="Justuno API Integration">
+		<email>
+			api@justuno.com
+		</email>
+		<endpoint_url>
+		</endpoint_url>
+		<identity_link_url>
+		</identity_link_url>
+	</integration>
+</integrations>

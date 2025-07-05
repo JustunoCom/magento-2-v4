@@ -4,13 +4,4 @@
 		<plugin name="justuno_api_auth" type="Justuno\M2\Plugin\JustunoApiAuth" sortOrder="10" />
 	</type>
 	<preference for="Justuno\M2\Api\JustunoInterface" type="Justuno\M2\Model\Api\JustunoApi" />
-	<type name="Magento\Framework\Console\CommandList">
-		<arguments>
-			<argument name="commands" xsi:type="array">
-				<item name="justuno_setup_integration" xsi:type="object">
-					Justuno\M2\Console\Command\SetupIntegration
-				</item>
-			</argument>
-		</arguments>
-	</type>
 </config>
