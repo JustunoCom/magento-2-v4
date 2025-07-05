@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<integrations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Integration:etc/integration/api.xsd">
+	<integration name="JustunoIntegration">
+		<resources>
+			<!-- Sales Resources for Order Data -->
+			<resource name="Magento_Sales::sales" />
+			<resource name="Magento_Sales::sales_operation" />
+			<resource name="Magento_Sales::sales_order" />
+			<resource name="Magento_Sales::actions_view" />
+			<resource name="Magento_Sales::actions_edit" />
+			<resource name="Magento_Sales::create" />
+			<resource name="Magento_Sales::actions_email" />
+			<resource name="Magento_Sales::invoice" />
+			<resource name="Magento_Sales::shipment" />
+			<resource name="Magento_Sales::creditmemo" />
+			<!-- Product Resources -->
+			<resource name="Magento_Catalog::catalog" />
+			<resource name="Magento_Catalog::products" />
+			<resource name="Magento_Catalog::categories" />
+			<resource name="Magento_Catalog::catalog_inventory" />
+			<resource name="Magento_Catalog::products_read" />
+			<resource name="Magento_Catalog::products_edit" />
+			<resource name="Magento_Catalog::product_attribute" />
+			<resource name="Magento_CatalogInventory::cataloginventory" />
+			<!-- Customer Resources -->
+			<resource name="Magento_Customer::customer" />
+			<resource name="Magento_Customer::manage" />
+			<resource name="Magento_Customer::customer_read" />
+			<!-- Inventory Resources -->
+			<resource name="Magento_InventoryApi::inventory" />
+			<resource name="Magento_InventoryApi::source" />
+			<resource name="Magento_InventoryApi::stock" />
+			<!-- Additional useful resources -->
+			<resource name="Magento_Store::store" />
+			<resource name="Magento_Tax::tax" />
+			<resource name="Magento_Directory::directory" />
+		</resources>
+	</integration>
+</integrations>
