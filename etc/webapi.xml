@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
-    <route url="/V1/justuno/products" method="GET">
-        <service class="Justuno\M2\Api\JustunoInterface" method="getProducts"/>
-        <resources>
-            <resource ref="Justuno_M2::api_access"/>
-        </resources>
-    </route>
-    <route url="/V1/justuno/orders" method="GET">
-        <service class="Justuno\M2\Api\JustunoInterface" method="getOrders"/>
-        <resources>
-            <resource ref="Justuno_M2::api_access"/>
-        </resources>
-    </route>
-    <route url="/V1/justuno/cart" method="GET">
-        <service class="Justuno\M2\Api\JustunoInterface" method="getCartData"/>
-        <resources>
-            <resource ref="Justuno_M2::api_access"/>
-        </resources>
-    </route>
-    <route url="/V1/justuno/apply-discount" method="POST">
-        <service class="Justuno\M2\Api\JustunoInterface" method="applyDiscountCode"/>
-        <resources>
-            <resource ref="Justuno_M2::api_access"/>
-        </resources>
-    </route>
+	<route url="/V1/justuno/products" method="GET">
+		<service class="Justuno\M2\Api\JustunoInterface" method="getProducts" />
+		<resources>
+			<resource ref="anonymous" />
+		</resources>
+	</route>
+	<route url="/V1/justuno/orders" method="GET">
+		<service class="Justuno\M2\Api\JustunoInterface" method="getOrders" />
+		<resources>
+			<resource ref="anonymous" />
+		</resources>
+	</route>
+	<route url="/V1/justuno/cart" method="GET">
+		<service class="Justuno\M2\Api\JustunoInterface" method="getCartData" />
+		<resources>
+			<resource ref="anonymous" />
+		</resources>
+	</route>
+	<route url="/V1/justuno/apply-discount" method="POST">
+		<service class="Justuno\M2\Api\JustunoInterface" method="applyDiscountCode" />
+		<resources>
+			<resource ref="anonymous" />
+		</resources>
+	</route>
 </routes>
