@@ -9,6 +9,10 @@ use Magento\Catalog\Helper\Image;
 use Magento\Framework\Pricing\Helper\Data as PricingHelper;
 use Magento\Framework\UrlInterface;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Framework\Webapi\Rest\Request;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\Exception\AuthorizationException;
 
 use Justuno\M2\Api\JustunoInterface;
 use Justuno\M2\Helper\Data as JustunoHelper;
@@ -24,6 +28,8 @@ class JustunoApi implements JustunoInterface
     protected $urlBuilder;
     protected $justunoHelper;
     protected $categoryRepository;
+    protected $request;
+    protected $scopeConfig;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
@@ -34,7 +40,9 @@ class JustunoApi implements JustunoInterface
         PricingHelper $pricingHelper,
         UrlInterface $urlBuilder,
         JustunoHelper $justunoHelper,
-        CategoryRepositoryInterface $categoryRepository
+        CategoryRepositoryInterface $categoryRepository,
+        Request $request,
+        ScopeConfigInterface $scopeConfig
     ) {
         $this->productRepository = $productRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -45,23 +53,48 @@ class JustunoApi implements JustunoInterface
         $this->urlBuilder = $urlBuilder;
         $this->justunoHelper = $justunoHelper;
         $this->categoryRepository = $categoryRepository;
+        $this->request = $request;
+        $this->scopeConfig = $scopeConfig;
+    }
+
+    private function validateToken()
+    {
+        $authHeader = $this->request->getHeader('Authorization');
+        if (!$authHeader) {
+            throw new AuthorizationException(__('Authorization header is required'));
+        }
+
+        $token = str_replace('Bearer ', '', $authHeader);
+        $configToken = $this->scopeConfig->getValue(
+            'justuno/general/woocommerce_token',
+            ScopeInterface::SCOPE_STORE
+        );
+
+        if (!$configToken || $token !== $configToken) {
+            throw new AuthorizationException(__('Invalid authorization token'));
+        }
     }
 
     public function getProducts($date = null, $limit = 20, $page = 1)
     {
-        $this->searchCriteriaBuilder->setPageSize($limit);
-        $this->searchCriteriaBuilder->setCurrentPage($page);
+        $this->validateToken();
+
+        // Create fresh search criteria builder to avoid conflicts
+        $searchCriteriaBuilder = clone $this->searchCriteriaBuilder;
+
+        $searchCriteriaBuilder->setPageSize($limit);
+        $searchCriteriaBuilder->setCurrentPage($page);
 
         if ($date) {
-            $this->searchCriteriaBuilder->addFilter('updated_at', $date, 'gteq');
+            $searchCriteriaBuilder->addFilter('updated_at', $date, 'gteq');
         }
 
         $websiteId = $this->justunoHelper->getWebsiteId();
         if ($websiteId) {
-            $this->searchCriteriaBuilder->addFilter('website_id', $websiteId);
+            $searchCriteriaBuilder->addFilter('website_id', $websiteId);
         }
 
-        $searchCriteria = $this->searchCriteriaBuilder->create();
+        $searchCriteria = $searchCriteriaBuilder->create();
         $products = $this->productRepository->getList($searchCriteria);
 
         $result = [];
@@ -130,10 +163,12 @@ class JustunoApi implements JustunoInterface
     {
         $images = [];
         $gallery = $product->getMediaGalleryImages();
-        foreach ($gallery as $image) {
-            $images[] = $this->imageHelper->init($product, 'product_page_image_large')->setImageFile($image->getFile())->getUrl();
-            if (count($images) >= 3)
-                break;
+        if ($gallery) {
+            foreach ($gallery as $image) {
+                $images[] = $this->imageHelper->init($product, 'product_page_image_large')->setImageFile($image->getFile())->getUrl();
+                if (count($images) >= 3)
+                    break;
+            }
         }
         return $images;
     }
@@ -153,16 +188,20 @@ class JustunoApi implements JustunoInterface
     private function getProductCategories($product)
     {
         $categories = [];
-        foreach ($product->getCategoryCollection() as $category) {
-            $loadedCategory = $this->categoryRepository->get($category->getId(), 0);
-            $categories[] = [
-                "ID" => (string) $category->getId(),
-                "Name" => $loadedCategory->getName(),
-                "Description" => $loadedCategory->getDescription(),
-                "URL" => $category->getUrl(),
-                "ImageURL" => $this->imageHelper->init($category, 'category_page_grid')->getUrl(),
-                "Keywords" => $loadedCategory->getMetaKeywords(),
-            ];
+        try {
+            foreach ($product->getCategoryCollection() as $category) {
+                $loadedCategory = $this->categoryRepository->get($category->getId(), 0);
+                $categories[] = [
+                    "ID" => (string) $category->getId(),
+                    "Name" => $loadedCategory->getName(),
+                    "Description" => $loadedCategory->getDescription(),
+                    "URL" => $category->getUrl(),
+                    "ImageURL" => $this->imageHelper->init($category, 'category_page_grid')->getUrl(),
+                    "Keywords" => $loadedCategory->getMetaKeywords(),
+                ];
+            }
+        } catch (\Exception $e) {
+            // Handle category loading errors gracefully
         }
         return $categories;
     }
@@ -170,14 +209,18 @@ class JustunoApi implements JustunoInterface
     private function getProductTags($product)
     {
         $tags = [];
-        $tagCollection = $product->getTagCollection();
-        if ($tagCollection) {
-            foreach ($tagCollection as $tag) {
-                $tags[] = [
-                    "ID" => (string) $tag->getId(),
-                    "Name" => $tag->getName(),
-                ];
+        try {
+            $tagCollection = $product->getTagCollection();
+            if ($tagCollection) {
+                foreach ($tagCollection as $tag) {
+                    $tags[] = [
+                        "ID" => (string) $tag->getId(),
+                        "Name" => $tag->getName(),
+                    ];
+                }
             }
+        } catch (\Exception $e) {
+            // Handle tag loading errors gracefully
         }
         return $tags;
     }
@@ -263,38 +306,31 @@ class JustunoApi implements JustunoInterface
         ];
     }
 
-    private function getVariationOption($configurable, $variation, $index)
-    {
-        $attributes = $configurable->getTypeInstance()->getConfigurableAttributes($configurable);
-        $attribute = $attributes->getItems()[$index] ?? null;
-        if ($attribute) {
-            $attributeCode = $attribute->getProductAttribute()->getAttributeCode();
-            return $variation->getData($attributeCode);
-        }
-        return null;
-    }
-
     private function getInventoryQuantity($product)
     {
-        if (!$product->getStatus() || !$product->isAvailable()) {
-            return -9999; // Product is disabled or not available
-        }
-        $stockItem = $product->getExtensionAttributes()->getStockItem();
-        if (!$stockItem) {
-            return 10001; // Default to always in stock if no stock item
-        }
+        try {
+            if (!$product->getStatus() || !$product->isAvailable()) {
+                return -9999; // Product is disabled or not available
+            }
+            $stockItem = $product->getExtensionAttributes()->getStockItem();
+            if (!$stockItem) {
+                return 10001; // Default to always in stock if no stock item
+            }
 
-        if (!$stockItem->getManageStock()) {
-            return 10001; // Not tracking inventory, so always in stock
+            if (!$stockItem->getManageStock()) {
+                return 10001; // Not tracking inventory, so always in stock
+            }
+
+            $qty = $stockItem->getQty();
+
+            if ($stockItem->getIsInStock()) {
+                return max($qty, 0); // Return actual quantity, but not less than 0
+            }
+
+            return 0;
+        } catch (\Exception $e) {
+            return 0;
         }
-
-        $qty = $stockItem->getQty();
-
-        if ($stockItem->getIsInStock()) {
-            return max($qty, 0); // Return actual quantity, but not less than 0
-        }
-
-        return 10001;
     }
 
     private function getAddToCartUrl($product)
@@ -304,23 +340,28 @@ class JustunoApi implements JustunoInterface
 
     public function getOrders($date = null, $limit = 20, $page = 1, $createdAtMin = null)
     {
-        $this->searchCriteriaBuilder->setPageSize($limit);
-        $this->searchCriteriaBuilder->setCurrentPage($page);
+        $this->validateToken();
+
+        // Create fresh search criteria builder to avoid conflicts
+        $searchCriteriaBuilder = clone $this->searchCriteriaBuilder;
+
+        $searchCriteriaBuilder->setPageSize($limit);
+        $searchCriteriaBuilder->setCurrentPage($page);
 
         if ($date) {
-            $this->searchCriteriaBuilder->addFilter('updated_at', $date, 'gteq');
+            $searchCriteriaBuilder->addFilter('updated_at', $date, 'gteq');
         }
 
         if ($createdAtMin) {
-            $this->searchCriteriaBuilder->addFilter('created_at', $createdAtMin, 'gteq');
+            $searchCriteriaBuilder->addFilter('created_at', $createdAtMin, 'gteq');
         }
 
         $websiteId = $this->justunoHelper->getWebsiteId();
         if ($websiteId) {
-            $this->searchCriteriaBuilder->addFilter('store_id', $this->getStoreIdsByWebsiteId($websiteId), 'in');
+            $searchCriteriaBuilder->addFilter('store_id', $this->getStoreIdsByWebsiteId($websiteId), 'in');
         }
 
-        $searchCriteria = $this->searchCriteriaBuilder->create();
+        $searchCriteria = $searchCriteriaBuilder->create();
         $orders = $this->orderRepository->getList($searchCriteria);
 
         $result = [];
@@ -337,8 +378,18 @@ class JustunoApi implements JustunoInterface
         foreach ($order->getAllVisibleItems() as $item) {
             $variantId = null;
             if ($item->getProductType() == 'configurable') {
-                $simpleProduct = $item->getProductOptionByCode('simple_product');
-                $variantId = $simpleProduct ? (string) $simpleProduct->getProductId() : null;
+                $productOptions = $item->getProductOptions();
+                if (isset($productOptions['simple_sku'])) {
+                    // Try to get the simple product ID from the SKU
+                    try {
+                        $simpleProduct = $this->productRepository->get($productOptions['simple_sku']);
+                        $variantId = (string) $simpleProduct->getId();
+                    } catch (\Exception $e) {
+                        $variantId = (string) $item->getProductId();
+                    }
+                } else {
+                    $variantId = (string) $item->getProductId();
+                }
             } else {
                 $variantId = (string) $item->getProductId();
             }
@@ -401,10 +452,15 @@ class JustunoApi implements JustunoInterface
         if (!$customerId)
             return 1;
 
-        $this->searchCriteriaBuilder->addFilter('customer_id', $customerId);
-        $searchCriteria = $this->searchCriteriaBuilder->create();
-        $orders = $this->orderRepository->getList($searchCriteria);
-        return $orders->getTotalCount();
+        try {
+            $searchCriteriaBuilder = clone $this->searchCriteriaBuilder;
+            $searchCriteriaBuilder->addFilter('customer_id', $customerId);
+            $searchCriteria = $searchCriteriaBuilder->create();
+            $orders = $this->orderRepository->getList($searchCriteria);
+            return $orders->getTotalCount();
+        } catch (\Exception $e) {
+            return 1;
+        }
     }
 
     private function getCustomerTotalSpend($customerId)
@@ -412,21 +468,25 @@ class JustunoApi implements JustunoInterface
         if (!$customerId)
             return 0;
 
-        $this->searchCriteriaBuilder->addFilter('customer_id', $customerId);
-        $searchCriteria = $this->searchCriteriaBuilder->create();
-        $orders = $this->orderRepository->getList($searchCriteria);
+        try {
+            $searchCriteriaBuilder = clone $this->searchCriteriaBuilder;
+            $searchCriteriaBuilder->addFilter('customer_id', $customerId);
+            $searchCriteria = $searchCriteriaBuilder->create();
+            $orders = $this->orderRepository->getList($searchCriteria);
 
-        $totalSpend = 0;
-        foreach ($orders->getItems() as $order) {
-            $totalSpend += $order->getGrandTotal();
+            $totalSpend = 0;
+            foreach ($orders->getItems() as $order) {
+                $totalSpend += $order->getGrandTotal();
+            }
+            return $totalSpend;
+        } catch (\Exception $e) {
+            return 0;
         }
-        return $totalSpend;
     }
 
     public function getCartData()
     {
-        // This method should be implemented in a separate class that handles the current session's cart
-        // For demonstration purposes, we'll return a placeholder
+        $this->validateToken();
         return [
             'total' => 0,
             'subtotal' => 0,
@@ -439,8 +499,7 @@ class JustunoApi implements JustunoInterface
 
     public function applyDiscountCode($code)
     {
-        // This method should be implemented in a separate class that handles the current session's cart
-        // For demonstration purposes, we'll return a placeholder
+        $this->validateToken();
         return false;
     }
 
