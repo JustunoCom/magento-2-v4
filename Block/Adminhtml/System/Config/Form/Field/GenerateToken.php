@@ -42,7 +42,19 @@ class GenerateToken extends Field
 
     private function getScriptHtml()
     {
-        $adminUrl = $this->getUrl('justuno/system_config/generatetoken');
+        // Forward the scope (website/store) the admin is currently editing so
+        // the controller can save the new token at that scope. Without this,
+        // multi-site installs end up sharing one token at the default scope
+        // and product/order feeds can't be segregated.
+        $request = $this->getRequest();
+        $queryParams = [];
+        if ($websiteCode = $request->getParam('website')) {
+            $queryParams['website'] = $websiteCode;
+        }
+        if ($storeCode = $request->getParam('store')) {
+            $queryParams['store'] = $storeCode;
+        }
+        $adminUrl = $this->getUrl('justuno/system_config/generatetoken', $queryParams);
         return <<<SCRIPT
 <script type="text/javascript">
     require(['jquery'], function($) {

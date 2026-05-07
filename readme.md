@@ -58,12 +58,41 @@ bin/magento setup:static-content:deploy
 
 ## Setup and Configuration
 
+### Single-store install
+
 1. Log in to your Magento admin panel.
 2. Navigate to Stores > Configuration > Justuno > General Settings.
 3. Enter your Justuno API Key.
 4. Select your preferred subdomain or justone.ai.
-5. Click on "Generate Token" to create a WooCommerce-compatible token for API authentication.
+5. Click on "Generate Token" to create a token for API authentication.
 6. Save the configuration.
+7. Paste the token into the Justuno portal when connecting the Magento app.
+
+### Multi-store install
+
+For installations with more than one website (Magento "website" scope), each
+website must have its own Justuno integration so that product feeds and orders
+are kept separate. The plugin uses the auth token to figure out which website
+an incoming API request belongs to, so the only requirement is that each
+website is configured with its own token.
+
+1. Log in to your Magento admin panel.
+2. Navigate to Stores > Configuration > Justuno > General Settings.
+3. In the **scope dropdown** at the top-left of the page, switch from
+   "Default Config" to the website you want to connect.
+4. Enter the Justuno API Key for that website and click **Generate Token**.
+   The token is saved at the website scope.
+5. Save the configuration.
+6. In the Justuno portal, connect the Magento app for that site using this
+   token. The plugin will scope `/V1/justuno/products` and
+   `/V1/justuno/orders` responses to that website automatically — no extra
+   site ID configuration is needed.
+7. Repeat steps 3–6 for each additional website.
+
+You can also pass `site_id=<websiteId>` as a query-string parameter on
+`/V1/justuno/products` and `/V1/justuno/orders` to override the website that
+gets returned (useful when sharing a single token across scopes). Token-based
+scoping is preferred — it requires no portal-side changes.
 
 ## Usage
 

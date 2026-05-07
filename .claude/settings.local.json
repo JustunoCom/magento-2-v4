@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nRelease v4.1.4: Add PHP 8.3 and 8.4 support\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(php -l Helper/Data.php)",
+      "Bash(php -l Model/Api/JustunoApi.php)",
+      "Bash(php -l Api/JustunoInterface.php)",
+      "Bash(php -l Controller/Adminhtml/System/Config/GenerateToken.php)",
+      "Bash(php -l Block/Adminhtml/System/Config/Form/Field/GenerateToken.php)",
+      "Bash(command -v php7 php7.4 php8 php8.0 php8.1 php8.2 /usr/bin/php /opt/homebrew/bin/php)",
+      "Read(//opt/homebrew/Cellar/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

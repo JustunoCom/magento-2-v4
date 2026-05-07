@@ -31,6 +31,15 @@ class JustunoApi implements JustunoInterface
     protected $request;
     protected $scopeConfig;
 
+    /**
+     * Website ID resolved from the request — either from the auth token's
+     * scope or from an explicit site_id parameter. Null means "no scoping"
+     * (single-site install, default-scope token).
+     *
+     * @var int|null
+     */
+    protected $resolvedWebsiteId = null;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
@@ -65,17 +74,45 @@ class JustunoApi implements JustunoInterface
         }
 
         $token = str_replace('Bearer ', '', $authHeader);
-        $configToken = $this->scopeConfig->getValue(
-            'justuno/general/woocommerce_token',
-            ScopeInterface::SCOPE_STORE
-        );
 
-        if (!$configToken || $token !== $configToken) {
+        if (!$this->justunoHelper->isValidToken($token)) {
             throw new AuthorizationException(__('Invalid authorization token'));
+        }
+
+        // If the token is configured at a website/store scope, derive that
+        // website so subsequent product/order queries are scoped correctly
+        // even on multi-site installs.
+        $websiteId = $this->justunoHelper->getWebsiteIdFromToken($token);
+        if ($websiteId) {
+            $this->resolvedWebsiteId = $websiteId;
         }
     }
 
-    public function getProducts($date = null, $limit = 20, $page = 1)
+    /**
+     * Resolve the website ID to filter by, in priority order:
+     *   1. Explicit site_id passed in the API call
+     *   2. Website derived from the auth token's config scope
+     *   3. Legacy `justuno/general/website_id` config value
+     *   4. null (no scoping — return everything)
+     *
+     * @param int|string|null $explicitSiteId
+     * @return int|null
+     */
+    private function resolveWebsiteId($explicitSiteId = null)
+    {
+        if ($explicitSiteId !== null && $explicitSiteId !== '') {
+            return (int) $explicitSiteId;
+        }
+
+        if ($this->resolvedWebsiteId) {
+            return (int) $this->resolvedWebsiteId;
+        }
+
+        $configured = $this->justunoHelper->getWebsiteId();
+        return $configured ? (int) $configured : null;
+    }
+
+    public function getProducts($date = null, $limit = 20, $page = 1, $siteId = null)
     {
         $this->validateToken();
 
@@ -89,7 +126,7 @@ class JustunoApi implements JustunoInterface
             $searchCriteriaBuilder->addFilter('updated_at', $date, 'gteq');
         }
 
-        $websiteId = $this->justunoHelper->getWebsiteId();
+        $websiteId = $this->resolveWebsiteId($siteId);
         if ($websiteId) {
             $searchCriteriaBuilder->addFilter('website_id', $websiteId);
         }
@@ -338,7 +375,7 @@ class JustunoApi implements JustunoInterface
         return $this->urlBuilder->getUrl('checkout/cart/add', ['product' => $product->getId()]);
     }
 
-    public function getOrders($date = null, $limit = 20, $page = 1, $createdAtMin = null)
+    public function getOrders($date = null, $limit = 20, $page = 1, $createdAtMin = null, $siteId = null)
     {
         $this->validateToken();
 
@@ -356,7 +393,7 @@ class JustunoApi implements JustunoInterface
             $searchCriteriaBuilder->addFilter('created_at', $createdAtMin, 'gteq');
         }
 
-        $websiteId = $this->justunoHelper->getWebsiteId();
+        $websiteId = $this->resolveWebsiteId($siteId);
         if ($websiteId) {
             $searchCriteriaBuilder->addFilter('store_id', $this->getStoreIdsByWebsiteId($websiteId), 'in');
         }
